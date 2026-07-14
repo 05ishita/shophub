@@ -1,6 +1,8 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Cart from "./pages/Cart";
+import Wishlist from "./pages/Wishlist";
 
 import Navbar from "./components/Navbar";
 
@@ -86,6 +88,16 @@ function App() {
           path="/contact"
           element={<Contact />}
         />
+
+<Route
+  path="/cart"
+  element={<Cart />}
+/>
+
+<Route
+  path="/wishlist"
+  element={<Wishlist />}
+/>
 
       </Routes>
     </>

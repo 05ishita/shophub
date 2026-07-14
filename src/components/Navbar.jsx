@@ -49,12 +49,24 @@ function Navbar() {
           ❤️ Wishlist
         </Link>
 
-        <Link to="/cart" className="cart-btn">
-          🛒 Cart
-          <span className="cart-count">
-            {cart.length}
-          </span>
-        </Link>
+        <Link
+  to="/cart"
+  className="cart-btn"
+>
+
+🛒 Cart
+
+<span className="cart-count">
+{cart.length}
+</span>
+
+<li>
+  <Link to="/wishlist">
+    ❤️ Wishlist
+  </Link>
+</li>
+
+</Link>
 
       </div>
 

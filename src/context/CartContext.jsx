@@ -3,46 +3,41 @@ import { createContext, useEffect, useState } from "react";
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-
   const [cart, setCart] = useState(() => {
-
-  const savedCart = localStorage.getItem("cart");
-
-  return savedCart ? JSON.parse(savedCart) : [];
-
-}); // Refresh ke baad bhi cart load hoga.
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
 
   function addToCart(product) {
-console.log("Button clicked:", product);
-
-    setCart([...cart, product]);
-
+    setCart((prevCart) => [...prevCart, product]);
   }
 
+  function removeFromCart(id) {
+    setCart((prevCart) =>
+      prevCart.filter((item) => item.id !== id)
+    );
+  }
+
+  function clearCart() {
+    setCart([]);
+  }
 
   useEffect(() => {
-
-  localStorage.setItem(
-    "cart",                 
-      // Cart change hote hi LocalStorage me save.
-    JSON.stringify(cart)
-  );
-
-}, [cart]);
-
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
 
   return (
-
     <CartContext.Provider
-      value={{ cart, addToCart }}
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        clearCart,
+      }}
     >
-
       {children}
-
     </CartContext.Provider>
-
   );
-
 }
 
 export default CartContext;

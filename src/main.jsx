@@ -1,41 +1,37 @@
-
-
-
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import store from "./redux/store";
 import { ToastContainer } from "react-toastify";
+
+import "./index.css";
 import "react-toastify/dist/ReactToastify.css";
 
-
-import { WishlistProvider } from "./context/WishlistContext";
-import { BrowserRouter } from "react-router-dom";
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import App from "./App";
+import store from "./redux/store";
 
 import { CartProvider } from "./context/CartContext";
+import { WishlistProvider } from "./context/WishlistContext";
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-  <WishlistProvider>
+      <Provider store={store}>
+        
+          <WishlistProvider>
 
-    <Provider store={store}>
+            <App />
 
-      <CartProvider>
+            <ToastContainer
+              position="top-right"
+              autoClose={2000}
+              newestOnTop
+              theme="colored"
+            />
 
-        <App />
-
-        <ToastContainer />
-
-      </CartProvider>
-
-    </Provider>
-
-  </WishlistProvider>
-</BrowserRouter>
-    
-
+          </WishlistProvider>
+        
+      </Provider>
+    </BrowserRouter>
   </StrictMode>
-) ;
+);

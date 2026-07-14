@@ -2,28 +2,47 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 function useFetch(url) {
-
   const [data, setData] = useState([]);
-
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
+    let isMounted = true;
 
-    axios.get(url) //API call ki.
+    async function fetchData() {
+      setLoading(true);
+      setError("");
 
-      .then((res) => {
+      try {
+        const response = await axios.get(url);
 
-        setData(res.data); //API ka data state me save kiya.
+        if (isMounted) {
+          setData(response.data);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError("Failed to load data.");
+          console.error(err);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
 
-        setLoading(false);
+    fetchData();
 
-      });
-
+    return () => {
+      isMounted = false;
+    };
   }, [url]);
 
-  return { data, loading }; //Hook data aur loading 
-  //return karega.
-
+  return {
+    data,
+    loading,
+    error,
+  };
 }
 
 export default useFetch;

@@ -1,39 +1,66 @@
-
+import { Link, NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useContext } from "react";
-import CartContext from "../context/CartContext";
-// useContext → Context ka data use karne ke liye
 
-// CartContext → Cart ka shared data import kiya
-import { Link } from "react-router-dom";
 function Navbar() {
- const cart = useSelector((state) => state.cart.cart);
+
+  const cart = useSelector((state) => state.cart.cart);
+
   return (
 
     <nav className="navbar">
 
-      <h2>🛍️ ShopHub</h2>
+      <div className="logo">
+        <Link to="/">
+          🛍️ <span>ShopHub</span>
+        </Link>
+      </div>
 
-      <p>🛒 Cart ({cart.length})</p>
-      
+      <ul className="nav-links">
 
+        <li>
+          <NavLink to="/">
+            Home
+          </NavLink>
+        </li>
 
-      <ul>      
+        <li>
+          <NavLink to="/product">
+            Products
+          </NavLink>
+        </li>
 
-       <li><Link to="/">Home</Link></li>
+        <li>
+          <NavLink to="/about">
+            About
+          </NavLink>
+        </li>
 
-<li><Link to="/product">Product</Link></li>
-
-<li><Link to="/about">About</Link></li>
-
-<li><Link to="/contact">Contact</Link></li>
+        <li>
+          <NavLink to="/contact">
+            Contact
+          </NavLink>
+        </li>
 
       </ul>
+
+      <div className="nav-right">
+
+        <Link to="/wishlist" className="icon-btn">
+          ❤️ Wishlist
+        </Link>
+
+        <Link to="/cart" className="cart-btn">
+          🛒 Cart
+          <span className="cart-count">
+            {cart.length}
+          </span>
+        </Link>
+
+      </div>
 
     </nav>
 
   );
-
 }
 
 export default Navbar;

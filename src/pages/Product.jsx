@@ -1,139 +1,147 @@
-
-
+import { useState, useMemo, useCallback } from "react";
 import ProductCard from "../components/ProductCard";
-import { useState, useMemo ,  useCallback} from "react";
 import useFetch from "../hooks/useFetch";
 
 function Product() {
 
   const { data: products, loading } =
-  useFetch("https://fakestoreapi.com/products");
+    useFetch("https://fakestoreapi.com/products");
 
   const [search, setSearch] = useState("");
-
   const [sortOrder, setSortOrder] = useState("");
-
   const [category, setCategory] = useState("all");
 
   const handleSearch = useCallback((e) => {
-  setSearch(e.target.value);
-}, []);
+    setSearch(e.target.value);
+  }, []);
 
-const handleSort = useCallback((e) => {
-  setSortOrder(e.target.value);
-}, []);
+  const handleSort = useCallback((e) => {
+    setSortOrder(e.target.value);
+  }, []);
 
-const handleCategory = useCallback((e) => {
-  setCategory(e.target.value);
-}, []);
-  
+  const handleCategory = useCallback((e) => {
+    setCategory(e.target.value);
+  }, []);
+
   const filteredProducts = useMemo(() => {
 
-  let result = [...products];
+    let result = [...products];
 
-  // Search
-  result = result.filter((product) =>
-    product.title.toLowerCase().includes(search.toLowerCase())
-  );
+    result = result.filter((product) =>
+      product.title.toLowerCase().includes(search.toLowerCase())
+    );
 
-  if (category !== "all") {    // Selected category ke
-  //  products hi dikhenge.
-  result = result.filter(
-    (product) => product.category === category
-  );
-}
-  // Sorting
-  if (sortOrder === "low") {
-    result.sort((a, b) => a.price - b.price);
-  }
+    if (category !== "all") {
+      result = result.filter(
+        (product) => product.category === category
+      );
+    }
 
-  if (sortOrder === "high") {
-    result.sort((a, b) => b.price - a.price);
-  }
+    if (sortOrder === "low") {
+      result.sort((a, b) => a.price - b.price);
+    }
 
-  return result;
+    if (sortOrder === "high") {
+      result.sort((a, b) => b.price - a.price);
+    }
 
-}, [products, search, sortOrder , category]);
+    return result;
 
-  
-  // API aane tak loading show hogi.
+  }, [products, search, sortOrder, category]);
+
   if (loading) {
-return (
-  <div className="loader">
-    Loading Products...
-  </div>
-);
-}
-  return(
-  
+    return (
+      <div className="page-status">
+        <h2>Loading Products...</h2>
+      </div>
+    );
+  }
 
-    <div className="product">
+  return (
 
-      <h1>Our Products</h1>
-     
-     <input
-  type="text"
-  placeholder="Search Product..."
-  value={search}
-  onChange={handleSearch}
-/>
-    
-    <select
-  value={sortOrder}
-  onChange={handleSort}
->
+    <>
 
-  <option value="">Sort By</option>
+      <section className="hero">
 
-  <option value="low">Low to High</option>
+        <h1>Discover Amazing Products</h1>
 
-  <option value="high">High to Low</option>
+        <p>
+          Shop quality products with a clean React interface,
+          search instantly, filter categories, and sort prices.
+        </p>
 
-</select>
+      </section>
 
+      <section className="product-section">
 
-<select
-  value={category}
-  onChange={handleCategory}
->
+        <h2 className="section-title">
+          Featured Products
+        </h2>
 
-  <option value="all">All</option>
+        <p className="section-subtitle">
+          {filteredProducts.length} Products Available
+        </p>
 
-  <option value="men's clothing">
-    Men's Clothing
-  </option>
+        <div className="controls">
 
-  <option value="women's clothing">
-    Women's Clothing
-  </option>
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={search}
+            onChange={handleSearch}
+          />
 
-  <option value="electronics">
-    Electronics
-  </option>
+          <select
+            value={sortOrder}
+            onChange={handleSort}
+          >
+            <option value="">Sort By</option>
+            <option value="low">Price : Low → High</option>
+            <option value="high">Price : High → Low</option>
+          </select>
 
-  <option value="jewelery">
-    Jewelery
-  </option>
+          <select
+            value={category}
+            onChange={handleCategory}
+          >
+            <option value="all">All Categories</option>
+            <option value="men's clothing">Men's Clothing</option>
+            <option value="women's clothing">Women's Clothing</option>
+            <option value="electronics">Electronics</option>
+            <option value="jewelery">Jewellery</option>
+          </select>
 
-</select>
+        </div>
 
+        <div className="grid">
 
-{filteredProducts.length > 0 ? (
+          {filteredProducts.length > 0 ? (
 
-  filteredProducts.map((product) => (
-    <ProductCard
-      key={product.id}
-      product={product}
-    />
-  ))
+            filteredProducts.map((product) => (
 
-) : (
+              <ProductCard
+                key={product.id}
+                product={product}
+              />
 
-  <h2>No Products Found</h2>
+            ))
 
-)}
+          ) : (
 
-    </div>
+            <div className="empty-state">
+
+              <h2>No Products Found</h2>
+
+            </div>
+
+          )}
+
+        </div>
+
+      </section>
+
+    </>
+
   );
 }
 

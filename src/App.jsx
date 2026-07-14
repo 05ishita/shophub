@@ -1,16 +1,13 @@
-
-
-
-
-import ProductDetails from "./pages/ProductDetails";
-import Product from "./pages/Product";
+import "./App.css";
 import { Routes, Route } from "react-router-dom";
+import { useEffect, useState } from "react";
 
+import Navbar from "./components/Navbar";
+
+import Product from "./pages/Product";
+import ProductDetails from "./pages/ProductDetails";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import Navbar from "./components/Navbar";
-import ProfileCard from "./components/ProfileCard";
-import { useState, useEffect } from "react";
 
 function App() {
 
@@ -18,7 +15,11 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  async function getUser() {
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  async function fetchUser() {
 
     try {
 
@@ -26,54 +27,69 @@ function App() {
         "https://jsonplaceholder.typicode.com/users/1"
       );
 
+      if (!response.ok) {
+        throw new Error();
+      }
+
       const data = await response.json();
 
       setUser(data);
 
-    } catch (err) {
+    } catch {
 
-      setError("Something went wrong!");
+      setError("Unable to load user information.");
 
     } finally {
 
       setLoading(false);
 
     }
-
   }
 
-  useEffect(() => {
-    getUser();
-  }, []);
-
   if (loading) {
-    return <h2>Loading...</h2>;
+    return (
+      <div className="page-status">
+        <h2>Loading ShopHub...</h2>
+      </div>
+    );
   }
 
   if (error) {
-    return <h2>{error}</h2>;
+    return (
+      <div className="page-status error">
+        <h2>{error}</h2>
+      </div>
+    );
   }
 
   return (
-   <>
-     <Navbar />
+    <>
+      <Navbar />
 
-  <Routes>
+      <Routes>
 
-  <Route path="/" element={<Product />} />
+        <Route path="/" element={<Product user={user} />} />
 
-  <Route path="/about" element={<About />} />
+        <Route path="/product" element={<Product user={user} />} />
 
-  <Route path="/contact" element={<Contact />} />
+        <Route
+          path="/product/:id"
+          element={<ProductDetails />}
+        />
 
-  <Route path="/product" element={<Product />} />
+        <Route
+          path="/about"
+          element={<About />}
+        />
 
-  <Route path="/product/:id" element={<ProductDetails />} />
+        <Route
+          path="/contact"
+          element={<Contact />}
+        />
 
-</Routes>
-</>
-);
-
+      </Routes>
+    </>
+  );
 }
 
 export default App;

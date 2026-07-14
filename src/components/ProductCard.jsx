@@ -1,29 +1,40 @@
+import { memo, useContext } from "react";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-import CartContext from "../context/CartContext";
-import WishlistContext from "../context/WishlistContext";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
-import { addToCart as addToCartRedux} from "../redux/cartSlice";
+import { toast } from "react-toastify";
 
+import WishlistContext from "../context/WishlistContext";
+import { addToCart } from "../redux/cartSlice";
 
 function ProductCard({ product }) {
 
-  const { addToCart } = useContext(CartContext);
-
   const dispatch = useDispatch();
 
-  // Context se wishlist data liya
-  const { wishlist, toggleWishlist } = useContext(WishlistContext);
+  const { wishlist, toggleWishlist } =
+    useContext(WishlistContext);
 
-  // Check ki product wishlist me hai ya nahi
   const isWishlisted = wishlist.some(
     (item) => item.id === product.id
   );
 
+  function handleCart() {
+
+    dispatch(addToCart(product));
+
+    toast.success("Product added to cart!");
+
+  }
+
   return (
+
     <div className="product-card">
+
+      <button
+        className="wishlist-btn"
+        onClick={() => toggleWishlist(product)}
+      >
+        {isWishlisted ? "❤️" : "🤍"}
+      </button>
 
       <img
         src={product.image}
@@ -32,37 +43,51 @@ function ProductCard({ product }) {
 
       <h3>{product.title}</h3>
 
-      <h2>₹ {product.price}</h2>
-
-      <p>
-        ⭐ {product.rating.rate} ({product.rating.count} Reviews)
+      <p className="category">
+        {product.category}
       </p>
 
-      {/* Wishlist Button */}
-      <button onClick={() => toggleWishlist(product)}>
-        {isWishlisted ? "❤️" : "🤍"}
-      </button>
+      <div className="rating">
 
-      {/* Add To Cart Button */}
-      <button
-        onClick={() => {
-         dispatch(addToCartRedux(product));
-          toast.success("Product Added Successfully");
-        }}
-      >
-        Add to Cart
-      </button>
+        ⭐ {product.rating.rate}
 
-      {/* Product Details Button */}
-      <Link to={`/product/${product.id}`}>
-        <button>View Details</button>
-      </Link>
+        <span>
+          ({product.rating.count} Reviews)
+        </span>
+
+      </div>
+
+      <h2 className="price">
+
+        ₹ {product.price}
+
+      </h2>
+
+      <div className="card-buttons">
+
+        <button
+          className="cart-btn"
+          onClick={handleCart}
+        >
+          Add to Cart
+        </button>
+
+        <Link to={`/product/${product.id}`}>
+
+          <button className="details-btn">
+
+            View Details
+
+          </button>
+
+        </Link>
+
+      </div>
 
     </div>
+
   );
+
 }
 
-import { memo } from "react";
-
 export default memo(ProductCard);
-//React unnecessary re-render kam karega.
